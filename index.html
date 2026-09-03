@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Audio Track Player by AJ D55</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="bg-glow" aria-hidden="true"></div>
+
+  <header class="app-header">
+    <div class="header-inner">
+      <div class="brand">
+        <div class="logo">♪</div>
+        <div>
+          <h1>Audio Track Player by AJ D55</h1>
+          <p>Audio Track Player &bull; 100% local &bull; multi-track</p>
+        </div>
+      </div>
+
+      <div class="master-controls">
+        <div class="master-vol output-picker" title="Choose where audio plays (Chrome/Edge)">
+          <label for="outputDevice">Output</label>
+          <select id="outputDevice">
+            <option value="">Default output</option>
+          </select>
+          <button id="outputRefreshBtn" class="btn btn-icon btn-small" type="button" title="Re-scan audio outputs">↻</button>
+          <span id="outputStatus" class="output-status" title="Audio output diagnostics"></span>
+        </div>
+        <div class="master-vol">
+          <label for="masterVolume">Master</label>
+          <input id="masterVolume" type="range" min="0" max="100" value="90" />
+          <span id="masterVolumeVal">90%</span>
+        </div>
+        <button id="stopAllBtn" class="btn btn-stop-all" title="Stop every track (S)">■ STOP ALL</button>
+      </div>
+    </div>
+
+    <div class="toolbar">
+      <div class="search-wrap">
+        <span class="search-icon">⌕</span>
+        <input id="searchInput" type="text" placeholder="Search / filter tracks…" autocomplete="off" />
+        <kbd> / </kbd>
+      </div>
+      <div class="toolbar-right">
+        <span id="trackCount" class="count-pill">0 tracks</span>
+        <span id="playingCount" class="count-pill playing">0 playing</span>
+        <button id="clearAllBtn" class="btn btn-ghost" title="Remove all tracks">Clear All</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <!-- Upload area -->
+    <section
+      id="dropzone"
+      class="dropzone"
+      role="button"
+      tabindex="0"
+      aria-label="Upload audio files by dropping or choosing files"
+    >
+      <div class="dz-icon">⤓</div>
+      <h2>Drag &amp; drop audio files here</h2>
+      <p>MP3 &bull; WAV &bull; OGG &bull; M4A &mdash; files stay in your browser, nothing is uploaded</p>
+      <div class="dz-actions">
+        <button id="chooseBtn" class="btn btn-primary" type="button">Choose Files</button>
+        <span class="dz-hint">or press <kbd>U</kbd> &bull; multi-select supported</span>
+      </div>
+      <input
+        id="fileInput"
+        type="file"
+        accept="audio/*,.mp3,.wav,.ogg,.m4a,.opus,.aac,.flac"
+        multiple
+        hidden
+      />
+    </section>
+
+    <!-- Shortcuts help -->
+    <section class="shortcuts-bar">
+      <span><kbd>1</kbd>–<kbd>9</kbd> play tracks</span>
+      <span><kbd>S</kbd> stop all</span>
+      <span><kbd>U</kbd> upload</span>
+      <span><kbd>/</kbd> search</span>
+      <span class="muted">Click <b>HOTKEY</b> on a card to assign a custom key</span>
+    </section>
+
+    <!-- Empty state -->
+    <section id="emptyState" class="empty-state">
+      <div class="empty-art">♫</div>
+      <h3>No tracks yet</h3>
+      <p>Upload audio files to build your soundboard. Each track plays independently.</p>
+    </section>
+
+    <!-- Track grid -->
+    <section id="trackGrid" class="track-grid" aria-live="polite"></section>
+  </main>
+
+  <footer class="footer">
+    <span>Built with HTML5 Audio API &bull; <span id="footerCount">0</span> tracks loaded locally</span>
+  </footer>
+
+  <!-- Card template -->
+  <template id="trackCardTemplate">
+    <article class="card" draggable="false">
+      <div class="card-top">
+        <span class="status-dot"></span>
+        <span class="status-text">Stopped</span>
+        <span class="hotkey-badge" title="Custom hotkey — click to assign">–</span>
+        <span class="drag-handle" title="Drag to reorder">⠿</span>
+      </div>
+
+      <h3 class="track-name" title="Double-click to rename"></h3>
+
+      <div class="progress-wrap" title="Click to seek">
+        <div class="progress-track">
+          <div class="progress-fill"></div>
+        </div>
+        <div class="time-row">
+          <span class="time-cur">0:00</span>
+          <span class="time-dur">0:00</span>
+        </div>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn btn-play" title="Play from start (restart if playing)">▶ Play</button>
+        <button class="btn btn-pause" title="Pause / resume">❚❚</button>
+        <button class="btn btn-stop" title="Stop & reset to start">■ Stop</button>
+        <button class="btn btn-icon btn-delete" title="Remove track">✕</button>
+      </div>
+
+      <div class="card-controls">
+        <div class="vol-row">
+          <span class="ctl-label">VOL</span>
+          <input class="vol-slider" type="range" min="0" max="100" value="100" />
+        </div>
+        <div class="toggle-row">
+          <button class="chip chip-loop" title="Loop this track">↻ Loop</button>
+          <button class="chip chip-rename" title="Rename track">✎</button>
+          <button class="chip chip-hotkey" title="Assign custom keyboard hotkey">Hotkey</button>
+        </div>
+      </div>
+    </article>
+  </template>
+
+  <script src="app.js"></script>
+</body>
+</html>
